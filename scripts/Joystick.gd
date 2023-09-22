@@ -6,6 +6,14 @@ class_name Joystick
 
 signal direction_changed(dir: Vector2)
 
+# TODO: enable touching on the left side to place the joystick and then drag
+# TODO: move arrows along with the handle
+# TODO: create export options to make the joystick static or not
+# TODO: create left_side_touch, right_side_touch events
+# TODO: create options to assign one joystick to the left and another to the right
+# TODO: create options to anchor buttons on the corners of the screen
+# TODO: create options to assign sprites while configuring the joysticks and buttons
+
 @onready var handle: TextureRect = $Handle
 @onready var arrows: TextureRect = $Arrows
 
