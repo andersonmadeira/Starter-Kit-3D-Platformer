@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bqqgyqafm7xwp"]
+[gd_scene load_steps=18 format=3 uid="uid://bqqgyqafm7xwp"]
 
 [ext_resource type="Environment" uid="uid://bqnqgflivjvue" path="res://scenes/main-environment.tres" id="1_ahusb"]
 [ext_resource type="PackedScene" uid="uid://dl2ed4gkybggf" path="res://objects/player.tscn" id="2_onms2"]
@@ -12,6 +12,9 @@
 [ext_resource type="Script" path="res://scripts/hud.gd" id="11_apvpm"]
 [ext_resource type="PackedScene" uid="uid://dy017k58p20sk" path="res://objects/cloud.tscn" id="13_drtpy"]
 [ext_resource type="Texture2D" uid="uid://cd7oyc56ehkx1" path="res://sprites/coin.png" id="13_jfda3"]
+[ext_resource type="Texture2D" uid="uid://byd1bpylocrf7" path="res://sprites/joystick_background.png" id="14_1q2t5"]
+[ext_resource type="Texture2D" uid="uid://cqououkj785aq" path="res://sprites/joystick_handle.png" id="15_kt2q5"]
+[ext_resource type="Texture2D" uid="uid://dphvrdaj5y3jj" path="res://sprites/joystick_arrows.png" id="16_v8bw6"]
 [ext_resource type="FontFile" uid="uid://d0cxd77jybrcn" path="res://fonts/lilita_one_regular.ttf" id="17_tk810"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_38ys3"]
@@ -135,6 +138,56 @@ transform = Transform3D(-0.422618, -0.694272, 0.582563, 0, 0.642788, 0.766044, -
 shadow_enabled = true
 shadow_opacity = 0.75
 
+[node name="Background" type="TextureButton" parent="."]
+visible = false
+modulate = Color(1, 1, 1, 0.556863)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 69.0
+offset_top = 512.0
+offset_right = 69.0
+offset_bottom = 512.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("14_1q2t5")
+ignore_texture_size = true
+stretch_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="Handle" type="TextureButton" parent="Background"]
+modulate = Color(1, 1, 1, 0.501961)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(32, 32)
+texture_normal = ExtResource("15_kt2q5")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Arrows" type="TextureButton" parent="Background/Handle"]
+modulate = Color(1, 1, 1, 0.501961)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.125
+anchor_top = 0.109375
+anchor_right = 0.875
+anchor_bottom = 0.859375
+offset_top = 1.0
+offset_bottom = 0.999996
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(24, 24)
+texture_normal = ExtResource("16_v8bw6")
+ignore_texture_size = true
+stretch_mode = 0
+metadata/_edit_use_anchors_ = true
+
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource("11_apvpm")
 
@@ -161,5 +214,71 @@ offset_right = 368.0
 offset_bottom = 123.0
 text = "0"
 label_settings = SubResource("LabelSettings_38ys3")
+
+[node name="MobileControls" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Joystick" type="Control" parent="HUD/MobileControls"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 72.0
+offset_top = -208.0
+offset_right = 200.0
+offset_bottom = -80.0
+grow_vertical = 0
+metadata/_edit_group_ = true
+
+[node name="Background" type="TextureRect" parent="HUD/MobileControls/Joystick"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.023
+anchor_right = 1.023
+anchor_bottom = 1.0
+offset_left = -2.944
+offset_right = -2.94394
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("14_1q2t5")
+expand_mode = 1
+
+[node name="Handle" type="TextureRect" parent="HUD/MobileControls/Joystick"]
+modulate = Color(0, 0, 0, 0.631373)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(32, 32)
+texture = ExtResource("15_kt2q5")
+expand_mode = 1
+
+[node name="Arrows" type="TextureRect" parent="HUD/MobileControls/Joystick"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.336375
+anchor_top = 0.312938
+anchor_right = 0.711
+anchor_bottom = 0.687563
+offset_left = -3.056
+offset_top = -0.0560036
+offset_right = -3.008
+offset_bottom = -0.00800323
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(24, 24)
+texture = ExtResource("16_v8bw6")
+expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [connection signal="coin_collected" from="Player" to="HUD" method="_on_coin_collected"]
