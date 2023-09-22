@@ -39,7 +39,12 @@ func _on_touch_release() -> void:
 	handle.global_position = original_handle_global_position
 	
 func _on_handle_drag(drag_position: Vector2) -> void:
-	handle.global_position = drag_position - handle.get_pivot_offset() - handle_relative_touch_position
+	var next_global_position = drag_position - handle.get_pivot_offset() - handle_relative_touch_position
+	var new_center_position = next_global_position + handle.get_pivot_offset()
+	var distance_from_center = handle_center_position.distance_to(new_center_position)
+	
+	if distance_from_center <= handle.get_pivot_offset().x + handle_touch_radius:
+		handle.global_position = next_global_position
 	
 func _get_relative_position(center: Vector2, other: Vector2) -> Vector2:
 	var pos := Vector2.ZERO
