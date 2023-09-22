@@ -1,5 +1,11 @@
 extends Control
 
+class_name Joystick
+
+@export var normalize := true
+
+signal direction_changed(dir: Vector2)
+
 @onready var handle: TextureRect = $Handle
 @onready var arrows: TextureRect = $Arrows
 
@@ -37,14 +43,41 @@ func _on_touch_press(touch_position: Vector2) -> void:
 func _on_touch_release() -> void:
 	is_dragging_handle = false
 	handle.global_position = original_handle_global_position
+	direction_changed.emit(Vector2.ZERO)
 	
 func _on_handle_drag(drag_position: Vector2) -> void:
-	var next_global_position = drag_position - handle.get_pivot_offset() - handle_relative_touch_position
-	var new_center_position = next_global_position + handle.get_pivot_offset()
-	var distance_from_center = handle_center_position.distance_to(new_center_position)
+	var direction = Vector2.ZERO
+	# where the control node will be positioned next
+	var next_global_position = \
+		drag_position - handle.get_pivot_offset() - handle_relative_touch_position
+	# where the center will be next
+	var next_center_position = \
+		next_global_position + handle.get_pivot_offset()
+	# vector that points to the touch position
+	var distance_vector = \
+		Vector2(next_center_position.x - handle_center_position.x, \
+				next_center_position.y - handle_center_position.y)
+	# get the radius of the joystick
+	var max_joystick_length = size.y / 2
+	# gets the vector clamped at the max length because the handle doesnt go past the border
+	var direction_vector_clamped = distance_vector.limit_length(max_joystick_length)
 	
-	if distance_from_center <= handle.get_pivot_offset().x + handle_touch_radius:
-		handle.global_position = next_global_position
+	# position the handle according to the drag position but constrainted to the joystick's boundaries
+	handle.global_position = \
+		handle_center_position - handle.get_pivot_offset()\
+		 - handle_relative_touch_position + direction_vector_clamped
+	
+	# calculate the proportional direction vector
+	direction = Vector2(\
+		direction_vector_clamped.x / max_joystick_length,
+		direction_vector_clamped.y / max_joystick_length)
+		
+	if normalize:
+		direction = direction.normalized()
+
+	print(direction)
+
+	direction_changed.emit(direction)
 	
 func _get_relative_position(center: Vector2, other: Vector2) -> Vector2:
 	var pos := Vector2.ZERO
