@@ -25,7 +25,16 @@ var coins = 0
 @onready var model = $Character
 @onready var animation = $Character/AnimationPlayer
 
+var joystick: Joystick
+
 # Functions
+
+func _ready() -> void:
+	joystick = MobileControls.get_joystick()
+	joystick.direction_changed.connect(_on_joystick_direction)
+	
+func _on_joystick_direction(dir: Vector2) -> void:
+	print(dir)
 
 func _physics_process(delta):
 	
@@ -97,6 +106,12 @@ func handle_controls(delta):
 	
 	input.x = Input.get_axis("move_left", "move_right")
 	input.z = Input.get_axis("move_forward", "move_back")
+	
+	# if no WASD movement, let's try the joystick
+	if input == Vector3.ZERO:
+		var input_direction := joystick.get_input()
+		input.x = input_direction.x
+		input.z = input_direction.y
 	
 	input = input.rotated(Vector3.UP, view.rotation.y).normalized()
 	

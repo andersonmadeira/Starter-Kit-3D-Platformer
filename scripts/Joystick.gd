@@ -2,7 +2,7 @@ extends Control
 
 class_name Joystick
 
-@export var normalize := true
+@export var normalize := false
 
 signal direction_changed(dir: Vector2)
 
@@ -22,6 +22,7 @@ var original_handle_global_position := Vector2.ZERO
 var handle_center_position := Vector2.ZERO
 var handle_touch_radius := 0
 var is_dragging_handle := false
+var direction := Vector2.ZERO
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
@@ -51,10 +52,10 @@ func _on_touch_press(touch_position: Vector2) -> void:
 func _on_touch_release() -> void:
 	is_dragging_handle = false
 	handle.global_position = original_handle_global_position
+	direction = Vector2.ZERO
 	direction_changed.emit(Vector2.ZERO)
 	
 func _on_handle_drag(drag_position: Vector2) -> void:
-	var direction = Vector2.ZERO
 	# where the control node will be positioned next
 	var next_global_position = \
 		drag_position - handle.get_pivot_offset() - handle_relative_touch_position
@@ -83,9 +84,10 @@ func _on_handle_drag(drag_position: Vector2) -> void:
 	if normalize:
 		direction = direction.normalized()
 
-	print(direction)
-
 	direction_changed.emit(direction)
+	
+func get_input() -> Vector2:
+	return direction
 	
 func _get_relative_position(center: Vector2, other: Vector2) -> Vector2:
 	var pos := Vector2.ZERO
